@@ -70,6 +70,30 @@ int check_values(char* string, int len)
     }
     return 0;
 }
+int check_endofstr(char* string)
+{
+    int endst = 0, end = 0;
+    if (string[strlen(string) - 1] == '\n')
+        endst = strlen(string) - 2;
+    else
+        endst = strlen(string) - 1;
+    for (int i = 0; i < strlen(string); i++) {
+        if ((string[i] == ')') && (string[i + 1] != '\n')) {
+            printf("Error at column %d: unexpected token\n", i + 1);
+            return 1;
+        } else if (
+                (string[i] == ')')
+                && ((string[i + 1] == '\n') || (string[i + 1] == ' '))) {
+            end = i;
+            break;
+        }
+    }
+    if (endst != end) {
+        printf("Error at column %d: expected ')'\n", endst);
+        return 1;
+    }
+    return 0;
+}
 int main()
 {
     printf("Hello, world!");
