@@ -94,6 +94,19 @@ int check_endofstr(char* string)
     }
     return 0;
 }
+int errormsg(char* string, char count)
+{
+    printf("shape number: %d\n", count);
+    printf("%s", string);
+    int len;
+    if ((len = check_name(string)) == 1)
+        printf("Error at column 0: expected 'circle'\n");
+    else if (check_args(string, len))
+        return 0;
+    else if (check_str_end(string))
+        return 0;
+    return 0;
+}
 int main()
 {
     printf("Hello, world!");
