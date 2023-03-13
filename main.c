@@ -109,6 +109,15 @@ int errormsg(char* string, char count)
 }
 int main()
 {
-    printf("Hello, world!");
+    char string[N];
+    FILE* check;
+    check = fopen("circle.txt", "r");
+    if (check == NULL) {
+        printf("Error of opening file!\n");
+        return 1;
+    }
+    for (char count = 1; fgets(string, N, check) != NULL; count++) {
+        errormsg(string, count);
+    }
     return 0;
 }
