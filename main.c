@@ -1,123 +1,120 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#define N 50
+#define SIZE 100
 
-int checker(char* string)
+int checker(char* str)
 {
-    char temp[strlen(string)], len = 0;
-    for (int i = 0; (string[i] > 96) && (string[i] < 123); i++) {
-        if (string[i] != '(') {
-            temp[i] = string[i];
-            len = i;
-        } else
+    int ret = 1;
+    char rec[SIZE];
+    for (int i = 0; i < strlen(str); i++) {
+        if (str[i] != '(')
+            rec[i] = str[i];
+        else
             break;
     }
-    if (strcmp(temp, "circle") == 0)
-        return len + 1;
-    else
-        return 1;
+    char figure[] = "circle";
+    if (strcmp(rec, figure) == 0) {
+        ret = 0;
+    }
+    return ret;
 }
-int check_values(char* string, int len)
+
+int checkarg(char* str)
 {
-    if (string[len] != '(') {
-        printf("Error at column %d: expected '('\n", len);
-        return 1;
-    }
-    char arg_count = 0, arg2_count = 0, d = 0, b = 0;
-    for (int i = len + 1; (i < strlen(string)) && (string[i] != ','); i++) {
-        if ((string[i] != ' ') && (string[i] != '.')
-            && (!((string[i] > 47) && (string[i] < 58)))) {
-            printf("Error at column %d\n", i);
+    int ret = 0;
+    int count = 0;
+    for (int i = 7; str[i] != ',' && i < strlen(str); i++) {
+        if ((str[i] != '.' && str[i] != ' ')
+            && !(str[i] >= 48 && str[i] <= 57)) {
+            printf("Figure coordinates entered incorrectly\n\n");
+            ret++;
             return 1;
         }
-        if ((string[i] > 47) && (string[i] < 58) && (string[i + 1] == ' ')) {
-            arg_count += 1;
-            d = i;
-        } else if ((string[i] == '.') && (string[i + 1] == ')')) {
-            arg_count += 3;
-            d = i;
+        if (str[i] >= 48 && str[i] <= 57 && str[i + 1] == ' ')
+            count++;
+        if (str[i] == '.' && str[i + 1] == ')')
+            count += 2;
+    }
+    if (count + 1 != 2) {
+        printf("Figure coordinates entered incorrectly\n\n");
+        ret++;
+        return ret;
+    }
+    int index = 0;
+    for (int i = 0; i != strlen(str); i++) {
+        if (str[i] == ',') {
+            index = i + 1;
+            i = strlen(str) - 1;
         }
     }
-    if ((arg_count != 1)) {
-        printf("Error at column %d: too many|less args\n", d);
-        return 1;
-    }
-    int v = 0;
-    for (int i = 0; i < strlen(string); i++) {
-        if (string[i] == ',') {
-            v = i + 1;
-        }
-    }
-    for (int i = v; (string[i] != ')') && (i < strlen(string)) - 1; i++) {
-        if (((string[i] != ' ') && (string[i] != '.')
-             && (!((string[i] > 47) && (string[i] < 58))))
-            || (string[i] == ',')) {
-            printf("Error at column %d: \n", i);
+    for (; str[index] != ')' && index < strlen(str); index++) {
+        if ((str[index] != '.' && str[index] != ' ')
+            && !(str[index] >= 48 && str[index] <= 57)) {
+            printf("Figure radius entered incorrectly\n\n");
+            ret++;
             return 1;
         }
-        if ((string[i] > 47) && (string[i] < 58) && (string[i + 1] == ' ')) {
-            arg2_count += 1;
-            b = i;
-        } else if ((string[i] == '.') && (string[i + 1] == ' ')) {
-            arg2_count += 2;
-            b = i;
-        }
+        if (str[index] >= 48 && str[index] <= 57 && str[index + 1] == ' ')
+            count++;
+        if (str[index] == '.' && str[index + 1] == ' ')
+            count += 2;
     }
-    if ((arg2_count != 1) && (b != 0)) {
-        printf("Error at column %d: too many|less args\n", b);
-        return 1;
+    if (count != 1) {
+        printf("Figure radius entered incorrectly\n\n");
+        ret++;
     }
-    return 0;
+    return ret;
 }
-int check_endofstr(char* string)
+
+int checkarguments(char* str)
 {
-    int endst = 0, end = 0;
-    if (string[strlen(string) - 1] == '\n')
-        endst = strlen(string) - 2;
+    int ret = 1, firstBracket = 0;
+    int endingSymbol;
+    if (str[strlen(str) - 1] == '\n')
+        endingSymbol = strlen(str) - 2;
     else
-        endst = strlen(string) - 1;
-    for (int i = 0; i < strlen(string); i++) {
-        if ((string[i] == ')') && (string[i + 1] != '\n')) {
-            printf("Error at column %d: unexpected token\n", i + 1);
-            return 1;
-        } else if (
-                (string[i] == ')')
-                && ((string[i + 1] == '\n') || (string[i + 1] == ' '))) {
-            end = i;
+        endingSymbol = strlen(str) - 1;
+    for (int i = 0; i < strlen(str); i++) {
+        if (str[i] == ')') {
+            firstBracket = i;
             break;
         }
     }
-    if (endst != end) {
-        printf("Error at column %d: expected ')'\n", endst);
-        return 1;
-    }
-    return 0;
+    if (firstBracket == endingSymbol)
+        ret = 0;
+    return ret;
 }
-int errormsg(char* string, char count)
+
+int checkerrors(char* str, int countFigures)
 {
-    printf("shape number: %d\n", count);
-    printf("%s", string);
-    int len;
-    if ((len = check_name(string)) == 1)
-        printf("Error at column 0: expected 'circle'\n");
-    else if (check_args(string, len))
+    printf("Figure %d:\n", countFigures);
+    printf("%s", str);
+    if (checker(str))
+        printf("Incorrect input of figure name\n\n");
+    else if (checkarg(str))
         return 0;
-    else if (check_str_end(string))
-        return 0;
+    else if (checkarguments(str))
+        printf("Wrong final symbol\n\n");
+
     return 0;
 }
+
 int main()
 {
-    char string[N];
-    FILE* check;
-    check = fopen("circle.txt", "r");
-    if (check == NULL) {
-        printf("Error of opening file!\n");
+    FILE* file;
+    file = fopen("circle.txt", "r");
+    if (file == NULL) {
+        printf("Error of oppening file!");
         return 1;
     }
-    for (char count = 1; fgets(string, N, check) != NULL; count++) {
-        errormsg(string, count);
+    char str1[SIZE];
+    int countFigures = 0;
+    while (fgets(str1, SIZE, file)) {
+        countFigures++;
+        checkerrors(str1, countFigures);
     }
+    fclose(file);
     return 0;
 }
