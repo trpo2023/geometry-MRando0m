@@ -1,16 +1,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int SIZE; 
+extern int SIZE;
 int checker(char* str)
 {
     int ret = 1;
     char* rec = (char*)malloc(SIZE * sizeof(char));
-    for (int i = 0; i < (int) strlen(str); i++) {
+    for (int i = 0; i < (int)strlen(str); i++) {
         if (str[i] != '(')
             rec[i] = str[i];
-        else
+        else {
             break;
+        }
     }
     char figure[] = "circle";
     if (strcmp(rec, figure) == 0) {
