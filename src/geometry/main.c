@@ -1,4 +1,5 @@
-#include "parser.h"
+#include <libgeometry/parser.h>
+#include <libgeometry/povtor.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,8 +18,13 @@ int main()
     int countFigures = 0;
     while (fgets(str1, SIZE, file)) {
         countFigures++;
-        checkerrors(str1, countFigures);
+        if (checkerrors(str1, countFigures) == 0) {
+            printf("\nPerimetr:%f\n", count_perimeter(str1));
+            printf("Plosh:%f\n", count_area(str1));
+        }
     }
+
     fclose(file);
+    printf("\n");
     return 0;
 }
