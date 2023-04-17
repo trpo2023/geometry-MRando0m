@@ -1,4 +1,6 @@
 *.out
 *.txt
+*.d
+*.a
 *.o
-main
+geometry
