@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int SIZE;
+#define SIZE 100
+
 int checker(char* str)
 {
     int ret = 1;

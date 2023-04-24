@@ -1,30 +1,44 @@
-#include <libgeometry/parser.h>
-#include <libgeometry/povtor.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-const int SIZE = 100;
+#include <libgeometry/intersections.h>
+#include <libgeometry/parser.h>
+
+#define SIZE 100
 
 int main()
 {
     FILE* file;
     file = fopen("circle.txt", "r");
     if (file == NULL) {
-        printf("Error of oppening file!");
+        printf("Error file oppen!");
         return 1;
     }
-    char* str1 = (char*)malloc(SIZE * sizeof(char));
-    int countFigures = 0;
-    while (fgets(str1, SIZE, file)) {
-        countFigures++;
-        if (checkerrors(str1, countFigures) == 0) {
-            printf("\nPerimetr:%f\n", count_perimeter(str1));
-            printf("Plosh:%f\n", count_area(str1));
+    char* line = (char*)malloc(SIZE * sizeof(char));
+    char** lines = (char**)malloc(sizeof(char*));
+    int row = 1, num = 1;
+    while (fgets(line, SIZE, file)) {
+        int check = circlis(line);
+        if (!check) {
+            lines = (char**)realloc(lines, row * sizeof(char*));
+            lines[row - 1] = (char*)malloc(strlen(line) * sizeof(char));
+            strcpy(lines[row - 1], line);
+            row++;
+        } else {
+            checkerrors(line, check, num++);
         }
     }
-
     fclose(file);
+
+    printf("\n\nCorrect figures in WKT format:");
+    intersections(lines, row - 1);
+
+    for (int i = 0; i < row - 1; i++) {
+        free(lines[i]);
+    }
+    free(lines);
+    free(line);
     printf("\n");
     return 0;
 }

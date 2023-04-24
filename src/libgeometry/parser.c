@@ -1,17 +1,16 @@
-#include <libgeometry/lexer.c>
+#include <libgeometry/lexer.h>
+#include <libgeometry/parser.h>
+
 #include <stdio.h>
 #include <string.h>
 
 int checkarg(char* str)
 {
-    int ret = 0;
     int count = 0;
     for (int i = 7; str[i] != ',' && i < (int)strlen(str); i++) {
         if ((str[i] != '.' && str[i] != ' ')
             && !(str[i] >= 48 && str[i] <= 57)) {
-            printf("Figure coordinates entered incorrectly\n\n");
-            ret++;
-            return 1;
+            return 2;
         }
         if (str[i] >= 48 && str[i] <= 57 && str[i + 1] == ' ')
             count++;
@@ -19,9 +18,7 @@ int checkarg(char* str)
             count += 2;
     }
     if (count + 1 != 2) {
-        printf("Figure coordinates entered incorrectly\n\n");
-        ret++;
-        return ret;
+        return 2;
     }
     int index = 0;
     for (int i = 0; i != (int)strlen(str); i++) {
@@ -33,9 +30,7 @@ int checkarg(char* str)
     for (; str[index] != ')' && index < (int)strlen(str); index++) {
         if ((str[index] != '.' && str[index] != ' ')
             && !(str[index] >= 48 && str[index] <= 57)) {
-            printf("Figure radius entered incorrectly\n\n");
-            ret++;
-            return 1;
+            return 4;
         }
         if (str[index] >= 48 && str[index] <= 57 && str[index + 1] == ' ')
             count++;
@@ -43,43 +38,57 @@ int checkarg(char* str)
             count += 2;
     }
     if (count != 1) {
-        printf("Figure radius entered incorrectly\n\n");
-        ret++;
+        return 4;
     }
-    return ret;
+    return 0;
 }
 
 int checkarguments(char* str)
 {
-    int ret = 1, firstBracket = 0;
-    int endingSymbol;
-    if (str[strlen(str) - 1] == '\n')
-        endingSymbol = strlen(str) - 2;
-    else
-        endingSymbol = strlen(str) - 1;
-    for (int i = 0; i < (int)strlen(str); i++) {
-        if (str[i] == ')') {
-            firstBracket = i;
-            break;
-        }
-    }
-    if (firstBracket == endingSymbol)
-        ret = 0;
-    return ret;
-}
-
-int checkerrors(char* str, int countFigures)
-{
-    printf("Figure %d:\n", countFigures);
-    printf("%s", str);
-    if (checker(str)) {
-        printf("Incorrect input of figure name\n\n");
-        return 1;
-    } else if (checkarg(str))
-        return 1;
-    else if (checkarguments(str)) {
-        printf("Wrong final symbol\n\n");
-        return 1;
+    if (str[strlen(str) - 3] != ')') {
+        return 5;
     }
     return 0;
+}
+
+int circlis(char* str)
+{
+    if (checker(str) == 1)
+        return 1;
+
+    if (checkarg(str) == 2)
+        return 2;
+
+    if (checkarg(str) == 3)
+        return 3;
+
+    if (checkarguments(str) == 4)
+        return 4;
+
+    if (checkarguments(str) == 5)
+        return 5;
+
+    return 0;
+}
+
+void checkerrors(char* line, int check, int countFigures)
+{
+    printf("\nFigure %d.\n %s", countFigures, line);
+    switch (check) {
+    case 1:
+        printf(" Incorrect input of figure name\n");
+        break;
+    case 2:
+        printf(" Figure coordinates entered incorrectly\n");
+        break;
+    case 3:
+        printf(" Figure radius entered incorrectly\n");
+        break;
+    case 4:
+        printf(" Wrong final symbol\n");
+        break;
+    case 5:
+        printf(" Wrong final symbol\n");
+        break;
+    }
 }
