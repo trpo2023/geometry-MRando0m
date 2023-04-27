@@ -13,8 +13,6 @@ OBJ_DIR = obj
 SRC_DIR = src
 TEST_DIR = test
 
-LDLIBS = -lm
-
 APP_PATH = $(BIN_DIR)/$(APP_NAME)
 LIB_PATH = $(OBJ_DIR)/$(SRC_DIR)/$(LIB_NAME)/$(LIB_NAME).a
 TEST_PATH = $(BIN_DIR)/$(TEST_NAME)
@@ -38,7 +36,7 @@ all: $(APP_PATH)
 -include $(DEPS)
 
 $(APP_PATH): $(APP_OBJECTS) $(LIB_PATH)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS) -lm
 
 $(LIB_PATH): $(LIB_OBJECTS)
 	ar rcs $@ $^
@@ -49,7 +47,7 @@ $(OBJ_DIR)/%.o: %.c
 .PHONY: test
 test: $(TEST_PATH)
 
-$(TEST_PATH): $(TEST_OBJ_PATH)/main.o $(TEST_OBJ_PATH)/test.o $(LIB_OBJECTS)
+$(TEST_PATH): $(TEST_OBJ_PATH)/main.o $(TEST_OBJ_PATH)/test.o $(LIB_PATH)
 	$(CC) $(CFLAGS) $(CFLAGS_TEST) -o $@ $^ -lm
 	
 $(OBJ)/$(TEST_DIR)/%.o: $(TEST_DIR)/main.c $(TEST_DIR)/test.c $(LIB_OBJECTS)
@@ -67,11 +65,4 @@ run: $(APP_RUN)
 	
 .PHONY: rtest
 rtest: $(TEST_CHECK)
-	$(TEST_CHECK)
-	
-.PHONY: start
-start:
-	make clean
-	make
-	make test
-	make rtest
+	$(TEST_CHECK)	
