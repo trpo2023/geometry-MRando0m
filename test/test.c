@@ -9,7 +9,7 @@
 #include "libgeometry/parser.h"
 #include "libgeometry/perimetr.h"
 
-CTEST(ckecktest, test1)
+CTEST(name, failname)
 {
     char* str = "circlee(1.0 2.0, 3)";
     int expected = 1;
@@ -17,7 +17,7 @@ CTEST(ckecktest, test1)
     ASSERT_EQUAL(expected, result);
 }
 
-CTEST(ckeckerrors, test2)
+CTEST(name, correctname)
 {
     char* str = "circle(1.0 2.0, 3.0)";
     int expected = 0;
@@ -25,7 +25,7 @@ CTEST(ckeckerrors, test2)
     ASSERT_EQUAL(expected, result);
 }
 
-CTEST(ckeckfail, test3)
+CTEST(arguments, failof_x)
 {
     char* str = "circle(1x 2, 3.0)";
     int expected = 2;
@@ -33,7 +33,7 @@ CTEST(ckeckfail, test3)
     ASSERT_EQUAL(expected, result);
 }
 
-CTEST(ckeckfail1, test4)
+CTEST(arguments, failof_y)
 {
     char* str = "circle(1 2x, 3.0)";
     int expected = 2;
@@ -41,7 +41,7 @@ CTEST(ckeckfail1, test4)
     ASSERT_EQUAL(expected, result);
 }
 
-CTEST(ckeckfail2, test5)
+CTEST(arguments, failof_rad)
 {
     char* str = "circle(1 2, 3.0x)";
     int expected = 4;
@@ -49,7 +49,7 @@ CTEST(ckeckfail2, test5)
     ASSERT_EQUAL(expected, result);
 }
 
-CTEST(ckeckout, test6)
+CTEST(brace, failbrace)
 {
     char* str = "circle(1 2, 3.1(";
     int expected = 5;
@@ -57,7 +57,7 @@ CTEST(ckeckout, test6)
     ASSERT_EQUAL(expected, result);
 }
 
-CTEST(ckeckstr, test7)
+CTEST(unexp_tok, failtok)
 {
     char* str = "circle(1.0 2.1, 3) 123";
     int expected = 5;
@@ -65,7 +65,7 @@ CTEST(ckeckstr, test7)
     ASSERT_EQUAL(expected, result);
 }
 
-CTEST(ckec_area_result, test8)
+CTEST(area, correct)
 {
     char* str = "circlee(1 2, 3)";
     double expected = 9 * M_PI;
@@ -73,7 +73,7 @@ CTEST(ckec_area_result, test8)
     ASSERT_DBL_NEAR_TOL(expected, result, 0.00000000001);
 }
 
-CTEST(check_area_res, test9)
+CTEST(area, fail)
 {
     char* str = "circle(1 2, x)";
     double expected = -1;
@@ -81,7 +81,7 @@ CTEST(check_area_res, test9)
     ASSERT_DBL_NEAR_TOL(expected, result, 0);
 }
 
-CTEST(check_perimetr_result, test10)
+CTEST(perimetr, correct)
 {
     char* str = "circle(1 2, 3)";
     double expected = 2 * M_PI * 3;
@@ -89,7 +89,7 @@ CTEST(check_perimetr_result, test10)
     ASSERT_DBL_NEAR_TOL(expected, result, 0.00000000001);
 }
 
-CTEST(check_perimetr_res, test11)
+CTEST(perimetr, fail)
 {
     char* str = "circle(1 2, x)";
     double expected = -1;
