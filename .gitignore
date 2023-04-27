@@ -1,0 +1,7 @@
+*.out
+*.d
+*.a
+*.o
+geometry
+.vscode/
+bin/
